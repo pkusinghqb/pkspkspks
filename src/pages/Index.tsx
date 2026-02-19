@@ -1,4 +1,5 @@
 import RoomCard from "@/components/RoomCard";
+import SearchBox from "@/components/SearchBox";
 
 export interface RateOption {
   benefits: string[];
@@ -109,6 +110,9 @@ const Index = () => {
         <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-8">
           Explore Our Rooms
         </h1>
+        <div className="mb-10">
+          <SearchBox />
+        </div>
         <div className="space-y-6">
           {rooms.map((room) => (
             <RoomCard key={room.title} room={room} />
