@@ -107,7 +107,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 py-10 md:py-16">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-8">
-          Select your room
+          Explore Our Rooms
         </h1>
         <div className="space-y-6">
           {rooms.map((room) => (
