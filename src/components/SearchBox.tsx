@@ -23,6 +23,8 @@ const SearchBox = () => {
   const [checkIn, setCheckIn] = useState<Date>(new Date(2025, 1, 21));
   const [checkOut, setCheckOut] = useState<Date>(new Date(2025, 1, 23));
   const [selectedNights, setSelectedNights] = useState("2N");
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calendarStep, setCalendarStep] = useState<"checkin" | "checkout">("checkin");
 
   const nights = Math.round(
     (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
@@ -79,7 +81,7 @@ const SearchBox = () => {
         {/* Date & Guest row */}
         <div className="flex items-center gap-3 flex-wrap">
           {/* Date selector with calendar popover */}
-          <Popover>
+          <Popover open={calendarOpen} onOpenChange={(open) => { setCalendarOpen(open); if (open) setCalendarStep("checkin"); }}>
             <PopoverTrigger asChild>
               <button className="flex items-center gap-2.5 bg-secondary/60 border border-border rounded-xl px-4 py-2.5 flex-1 min-w-[220px] hover:border-primary/40 transition-colors cursor-pointer text-left">
                 <CalendarIcon className="h-4 w-4 text-primary shrink-0" />
@@ -93,7 +95,7 @@ const SearchBox = () => {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <div className="flex flex-col sm:flex-row">
-                <div className="p-3 border-b sm:border-b-0 sm:border-r border-border">
+                <div className={cn("p-3 border-b sm:border-b-0 sm:border-r border-border", calendarStep === "checkin" && "bg-secondary/30")}>
                   <p className="text-xs font-medium text-muted-foreground mb-2 px-1">Check-in</p>
                   <Calendar
                     mode="single"
@@ -104,6 +106,7 @@ const SearchBox = () => {
                         if (date >= checkOut) {
                           setCheckOut(addDays(date, 1));
                         }
+                        setCalendarStep("checkout");
                       }
                     }}
                     disabled={(date) => date < new Date()}
@@ -111,13 +114,16 @@ const SearchBox = () => {
                     className={cn("p-3 pointer-events-auto")}
                   />
                 </div>
-                <div className="p-3">
+                <div className={cn("p-3", calendarStep === "checkout" && "bg-secondary/30")}>
                   <p className="text-xs font-medium text-muted-foreground mb-2 px-1">Check-out</p>
                   <Calendar
                     mode="single"
                     selected={checkOut}
                     onSelect={(date) => {
-                      if (date) setCheckOut(date);
+                      if (date) {
+                        setCheckOut(date);
+                        setCalendarOpen(false);
+                      }
                     }}
                     disabled={(date) => date <= checkIn}
                     className={cn("p-3 pointer-events-auto")}
