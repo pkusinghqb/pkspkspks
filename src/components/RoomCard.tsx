@@ -56,7 +56,7 @@ const RateRow = ({ rate, isFirst }: { rate: RateOption; isFirst: boolean }) => (
         </span>
       )}
       <div className="flex items-center pt-6">
-        <Users className="h-5 w-5 text-muted-foreground" />
+        <Users className="h-6 w-6 text-muted-foreground/80" />
       </div>
     </div>
 
