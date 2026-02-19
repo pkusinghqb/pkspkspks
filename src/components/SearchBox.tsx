@@ -7,12 +7,21 @@ import { Calendar } from "@/components/ui/calendar";
 
 type TabMode = "search" | "aide";
 
-const quickStays = [
-  { label: "1N", emoji: "⚡" },
-  { label: "2N", emoji: "🌙", default: true },
-  { label: "3N", emoji: "✈️" },
-  { label: "5N", emoji: "🌅" },
-  { label: "7N", emoji: "🌴" },
+const categories = [
+  { label: "Any", emoji: "✨", default: true },
+  { label: "Couple", emoji: "👫" },
+  { label: "Luxury", emoji: "🏨" },
+  { label: "Budget", emoji: "🏠" },
+  { label: "Solo", emoji: "🧳" },
+  { label: "Biz", emoji: "🏢" },
+];
+
+const trendingSearches = [
+  { label: "Dubai 5-star", emoji: "🏙️" },
+  { label: "Cheap Tokyo", emoji: "🗼" },
+  { label: "Luxury Bali", emoji: "🌴" },
+  { label: "Budget Bangkok", emoji: "🔺" },
+  { label: "Beach Phuket", emoji: "🏖️" },
 ];
 
 const SearchBox = () => {
@@ -20,9 +29,9 @@ const SearchBox = () => {
   const [location, setLocation] = useState("Tokyo");
   const [guests, setGuests] = useState(2);
   const [searchQuery, setSearchQuery] = useState("");
-  const [checkIn, setCheckIn] = useState<Date>(new Date(2025, 1, 21));
-  const [checkOut, setCheckOut] = useState<Date>(new Date(2025, 1, 23));
-  const [selectedNights, setSelectedNights] = useState("2N");
+  const [checkIn, setCheckIn] = useState<Date>(new Date(2025, 2, 21));
+  const [checkOut, setCheckOut] = useState<Date>(new Date(2025, 2, 23));
+  const [selectedCategory, setSelectedCategory] = useState("Any");
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calendarStep, setCalendarStep] = useState<"checkin" | "checkout">("checkin");
 
@@ -85,12 +94,10 @@ const SearchBox = () => {
             <PopoverTrigger asChild>
               <button className="flex items-center gap-2.5 bg-secondary/60 border border-border rounded-xl px-4 py-2.5 flex-1 min-w-[220px] hover:border-primary/40 transition-colors cursor-pointer text-left">
                 <CalendarIcon className="h-4 w-4 text-primary shrink-0" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-foreground">
-                    {format(checkIn, "EEE, d MMM")} – {format(checkOut, "EEE, d MMM")}
-                  </span>
-                  <span className="text-xs text-primary font-medium">{nights} nights</span>
-                </div>
+                <span className="text-sm font-semibold text-foreground">
+                  {format(checkIn, "EEE, d MMM")} – {format(checkOut, "EEE, d MMM")}
+                </span>
+                <span className="text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">{nights}N</span>
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -164,39 +171,58 @@ const SearchBox = () => {
             }
             placeholder={
               mode === "aide"
-                ? "Ask anything about your trip..."
+                ? 'Try "cheap 5-star Tokyo this weekend" or "surprise me"'
                 : "Search another city or hotel..."
             }
             className="w-full bg-transparent border-t border-border pt-4 pb-2 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
         </div>
 
-        {/* Quick stays */}
+        {/* Categories + Action buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-muted-foreground font-medium">Quick stay</span>
-          {quickStays.map((stay) => (
+          {categories.map((cat) => (
             <button
-              key={stay.label}
-              onClick={() => setSelectedNights(stay.label)}
+              key={cat.label}
+              onClick={() => setSelectedCategory(cat.label)}
               className={cn(
-                "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
-                selectedNights === stay.label
+                "flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all border",
+                selectedCategory === cat.label
                   ? "bg-primary/10 border-primary/30 text-primary"
                   : "bg-secondary border-border text-muted-foreground hover:text-foreground"
               )}
             >
-              <span>{stay.emoji}</span>
-              {stay.label}
+              <span>{cat.emoji}</span>
+              {cat.label}
             </button>
           ))}
+
+          <div className="ml-auto flex items-center gap-2">
+            <button className="flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-md hover:shadow-lg transition-all active:scale-95">
+              <Sparkles className="h-4 w-4" />
+              Surprise me
+            </button>
+            <button
+              onClick={() => setMode("aide")}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all"
+            >
+              <Sparkles className="h-4 w-4" />
+              Aide
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Floating search button */}
-      <div className="flex justify-end -mt-5 mr-2 relative z-10">
-        <button className="h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 flex items-center justify-center hover:bg-primary/90 transition-all hover:shadow-xl hover:shadow-primary/40 active:scale-95">
-          <Search className="h-5 w-5" />
-        </button>
+      {/* Trending searches */}
+      <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
+        {trendingSearches.map((item) => (
+          <button
+            key={item.label}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-card/60 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:border-border transition-all"
+          >
+            <span>{item.emoji}</span>
+            {item.label}
+          </button>
+        ))}
       </div>
     </div>
   );
