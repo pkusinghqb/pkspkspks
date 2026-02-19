@@ -1,37 +1,104 @@
 import RoomCard from "@/components/RoomCard";
 
-const rooms = [
+export interface RateOption {
+  benefits: string[];
+  highlightBenefit?: string;
+  price: number;
+  cheapest?: boolean;
+  urgency?: string;
+  flexible?: boolean;
+  deal?: boolean;
+}
+
+export interface RoomData {
+  title: string;
+  beds: string;
+  amenities: string[];
+  rates: RateOption[];
+  guests: number;
+}
+
+const rooms: RoomData[] = [
   {
     title: "Tower Standard Room with Twin Bed and Garden View",
     beds: "2 single beds",
-    price: 225,
+    amenities: ["Shower", "Free WiFi"],
     guests: 2,
-    urgency: "Only 1 room left!",
-    deal: true,
+    rates: [
+      {
+        benefits: ["Room only", "Book and pay now", "Free WiFi"],
+        highlightBenefit: "Non-refundable (Low price!)",
+        price: 225,
+        cheapest: true,
+        urgency: "Our last room!",
+        deal: true,
+      },
+    ],
   },
   {
-    title: "Deluxe King Room with City Skyline View",
+    title: "Garden Tower Standard Room",
+    beds: "1 queen bed",
+    amenities: ["Shower", "Free WiFi"],
+    guests: 2,
+    rates: [
+      {
+        benefits: ["Room only", "Book and pay now", "Free WiFi"],
+        highlightBenefit: "Free cancellation",
+        price: 231,
+        flexible: true,
+      },
+      {
+        benefits: ["Room only", "Book and pay now", "Free WiFi"],
+        highlightBenefit: "Non-refundable (Low price!)",
+        price: 287,
+        urgency: "Our last room!",
+        deal: true,
+      },
+    ],
+  },
+  {
+    title: "Tower Standard Room with Twin Bed and Garden View and Garden View",
+    beds: "2 single beds",
+    amenities: ["Shower", "Free WiFi"],
+    guests: 2,
+    rates: [
+      {
+        benefits: ["Room only", "Book and pay now", "Free WiFi"],
+        highlightBenefit: "Non-refundable (Low price!)",
+        price: 232,
+        urgency: "Our last room!",
+        deal: true,
+      },
+    ],
+  },
+  {
+    title: "Garden Tower Standard Room, Garden View",
     beds: "1 king bed",
-    price: 310,
+    amenities: ["Shower", "Free WiFi"],
     guests: 2,
-    urgency: "3 rooms left",
-    deal: false,
+    rates: [
+      {
+        benefits: ["Room only", "Book and pay now", "Free WiFi"],
+        highlightBenefit: "Non-refundable (Low price!)",
+        price: 302,
+        urgency: "Our last room!",
+        deal: true,
+      },
+    ],
   },
   {
-    title: "Superior Suite with Balcony and Ocean View",
-    beds: "1 king bed + sofa bed",
-    price: 475,
-    guests: 3,
-    urgency: "Only 2 left!",
-    deal: true,
-  },
-  {
-    title: "Economy Double Room — Inner Courtyard",
-    beds: "1 double bed",
-    price: 165,
+    title: "Double Room",
+    beds: "",
+    amenities: ["Shower", "Free WiFi"],
     guests: 2,
-    urgency: null,
-    deal: false,
+    rates: [
+      {
+        benefits: ["Room only", "Book and pay now", "Free WiFi"],
+        highlightBenefit: "Free cancellation before Mon, Feb 16",
+        price: 305,
+        flexible: true,
+      },
+    ],
   },
 ];
 
@@ -42,7 +109,7 @@ const Index = () => {
         <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-8">
           Select your room
         </h1>
-        <div className="space-y-5">
+        <div className="space-y-6">
           {rooms.map((room) => (
             <RoomCard key={room.title} room={room} />
           ))}
