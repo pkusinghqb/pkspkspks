@@ -16,6 +16,14 @@ const categories = [
   { label: "Biz", emoji: "🏢" },
 ];
 
+const quickStays = [
+  { label: "1N", emoji: "⚡" },
+  { label: "2N", emoji: "🌙", default: true },
+  { label: "3N", emoji: "✈️" },
+  { label: "5N", emoji: "🌅" },
+  { label: "7N", emoji: "🌴" },
+];
+
 const trendingSearches = [
   { label: "Dubai 5-star", emoji: "🏙️" },
   { label: "Cheap Tokyo", emoji: "🗼" },
@@ -32,6 +40,7 @@ const SearchBox = () => {
   const [checkIn, setCheckIn] = useState<Date>(new Date(2025, 2, 21));
   const [checkOut, setCheckOut] = useState<Date>(new Date(2025, 2, 23));
   const [selectedCategory, setSelectedCategory] = useState("Any");
+  const [selectedNights, setSelectedNights] = useState("2N");
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calendarStep, setCalendarStep] = useState<"checkin" | "checkout">("checkin");
 
@@ -155,59 +164,84 @@ const SearchBox = () => {
           placeholder={
             mode === "aide"
               ? 'Try "cheap 5-star Tokyo this weekend" or "surprise me"'
-              : "Search another city or hotel..."
+              : "Type a city or hotel name..."
           }
           className="w-full bg-transparent border-t border-border pt-3 pb-1 text-base text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
         />
 
-        {/* Row 4: Categories + Action buttons — same row */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {categories.map((cat) => (
+        {/* Row 4: Conditional based on mode */}
+        {mode === "search" ? (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground font-medium">Quick stay</span>
+            {quickStays.map((stay) => (
               <button
-                key={cat.label}
-                onClick={() => setSelectedCategory(cat.label)}
+                key={stay.label}
+                onClick={() => setSelectedNights(stay.label)}
                 className={cn(
                   "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
-                  selectedCategory === cat.label
+                  selectedNights === stay.label
                     ? "bg-primary/10 border-primary/30 text-primary"
                     : "bg-secondary border-border text-muted-foreground hover:text-foreground"
                 )}
               >
-                <span>{cat.emoji}</span>
-                {cat.label}
+                <span>{stay.emoji}</span>
+                {stay.label}
               </button>
             ))}
-          </div>
-
-          <div className="ml-auto flex items-center gap-2 shrink-0">
-            <button className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm hover:shadow-md transition-all active:scale-95">
-              <Sparkles className="h-3.5 w-3.5" />
-              Surprise me
+            <button className="ml-auto h-10 w-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center hover:bg-primary/25 transition-all active:scale-95">
+              <Search className="h-5 w-5" />
             </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {categories.map((cat) => (
+                <button
+                  key={cat.label}
+                  onClick={() => setSelectedCategory(cat.label)}
+                  className={cn(
+                    "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
+                    selectedCategory === cat.label
+                      ? "bg-primary/10 border-primary/30 text-primary"
+                      : "bg-secondary border-border text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <span>{cat.emoji}</span>
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+            <div className="ml-auto flex items-center gap-2 shrink-0">
+              <button className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm hover:shadow-md transition-all active:scale-95">
+                <Sparkles className="h-3.5 w-3.5" />
+                Surprise me
+              </button>
+              <button
+                onClick={() => setMode("aide")}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Aide
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Trending searches — only in Aide mode */}
+      {mode === "aide" && (
+        <div className="flex items-center justify-center gap-2.5 mt-4 flex-wrap">
+          {trendingSearches.map((item) => (
             <button
-              onClick={() => setMode("aide")}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all"
+              key={item.label}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-card/60 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:border-border transition-all"
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              Aide
+              <span>{item.emoji}</span>
+              {item.label}
             </button>
-          </div>
+          ))}
         </div>
-      </div>
-
-      {/* Trending searches */}
-      <div className="flex items-center justify-center gap-2.5 mt-4 flex-wrap">
-        {trendingSearches.map((item) => (
-          <button
-            key={item.label}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-card/60 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:border-border transition-all"
-          >
-            <span>{item.emoji}</span>
-            {item.label}
-          </button>
-        ))}
-      </div>
+      )}
     </div>
   );
 };
