@@ -42,62 +42,46 @@ const SearchBox = () => {
   return (
     <div className="w-full max-w-3xl mx-auto">
       <div className="bg-card rounded-2xl shadow-lg border border-border p-5 space-y-4">
-        {/* Top row: Tabs + Location */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Mode tabs */}
+        {/* Row 1: Tabs */}
+        <div className="flex items-center gap-3">
           <div className="flex items-center bg-secondary rounded-full p-1">
             <button
               onClick={() => setMode("search")}
               className={cn(
-                "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all",
+                "flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all",
                 mode === "search"
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-3.5 w-3.5" />
               Search
             </button>
             <button
               onClick={() => setMode("aide")}
               className={cn(
-                "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all",
+                "flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all",
                 mode === "aide"
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-3.5 w-3.5" />
               Aide
             </button>
           </div>
-
-          {/* Location pill */}
-          {location && (
-            <div className="flex items-center gap-1.5 bg-secondary border border-border rounded-full px-4 py-2">
-              <MapPin className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">{location}</span>
-              <button
-                onClick={() => setLocation("")}
-                className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Date & Guest row */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Date selector with calendar popover */}
+        {/* Row 2: Date + Nights badge + Guest counter — compact single row */}
+        <div className="flex items-center gap-3">
           <Popover open={calendarOpen} onOpenChange={(open) => { setCalendarOpen(open); if (open) setCalendarStep("checkin"); }}>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-2.5 bg-secondary/60 border border-border rounded-xl px-4 py-2.5 flex-1 min-w-[220px] hover:border-primary/40 transition-colors cursor-pointer text-left">
+              <button className="flex items-center gap-2 bg-secondary/60 border border-border rounded-full px-4 py-2 hover:border-primary/40 transition-colors cursor-pointer">
                 <CalendarIcon className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-medium text-foreground whitespace-nowrap">
                   {format(checkIn, "EEE, d MMM")} – {format(checkOut, "EEE, d MMM")}
                 </span>
-                <span className="text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">{nights}N</span>
+                <span className="text-xs font-bold text-primary-foreground bg-primary px-1.5 py-0.5 rounded ml-1">{nights}N</span>
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -141,71 +125,71 @@ const SearchBox = () => {
           </Popover>
 
           {/* Guest counter */}
-          <div className="flex items-center gap-3 bg-secondary/60 border border-border rounded-xl px-4 py-2.5">
+          <div className="flex items-center gap-2 bg-secondary/60 border border-border rounded-full px-3 py-2">
             <Users className="h-4 w-4 text-primary shrink-0" />
             <button
               onClick={() => setGuests(Math.max(1, guests - 1))}
-              className="h-7 w-7 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+              className="h-6 w-6 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
             >
-              <Minus className="h-3.5 w-3.5" />
+              <Minus className="h-3 w-3" />
             </button>
-            <span className="text-lg font-bold text-foreground w-5 text-center">{guests}</span>
+            <span className="text-sm font-bold text-foreground w-4 text-center">{guests}</span>
             <button
               onClick={() => setGuests(Math.min(10, guests + 1))}
-              className="h-7 w-7 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+              className="h-6 w-6 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-3 w-3" />
             </button>
           </div>
         </div>
 
-        {/* Search input */}
-        <div className="relative">
-          <input
-            type="text"
-            value={mode === "aide" ? searchQuery : location ? "" : ""}
-            onChange={(e) =>
-              mode === "aide"
-                ? setSearchQuery(e.target.value)
-                : setLocation(e.target.value)
-            }
-            placeholder={
-              mode === "aide"
-                ? 'Try "cheap 5-star Tokyo this weekend" or "surprise me"'
-                : "Search another city or hotel..."
-            }
-            className="w-full bg-transparent border-t border-border pt-4 pb-2 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-          />
-        </div>
+        {/* Row 3: Search input */}
+        <input
+          type="text"
+          value={mode === "aide" ? searchQuery : location ? "" : ""}
+          onChange={(e) =>
+            mode === "aide"
+              ? setSearchQuery(e.target.value)
+              : setLocation(e.target.value)
+          }
+          placeholder={
+            mode === "aide"
+              ? 'Try "cheap 5-star Tokyo this weekend" or "surprise me"'
+              : "Search another city or hotel..."
+          }
+          className="w-full bg-transparent border-t border-border pt-3 pb-1 text-base text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+        />
 
-        {/* Categories + Action buttons */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {categories.map((cat) => (
-            <button
-              key={cat.label}
-              onClick={() => setSelectedCategory(cat.label)}
-              className={cn(
-                "flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all border",
-                selectedCategory === cat.label
-                  ? "bg-primary/10 border-primary/30 text-primary"
-                  : "bg-secondary border-border text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <span>{cat.emoji}</span>
-              {cat.label}
-            </button>
-          ))}
+        {/* Row 4: Categories + Action buttons — same row */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {categories.map((cat) => (
+              <button
+                key={cat.label}
+                onClick={() => setSelectedCategory(cat.label)}
+                className={cn(
+                  "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
+                  selectedCategory === cat.label
+                    ? "bg-primary/10 border-primary/30 text-primary"
+                    : "bg-secondary border-border text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <span>{cat.emoji}</span>
+                {cat.label}
+              </button>
+            ))}
+          </div>
 
-          <div className="ml-auto flex items-center gap-2">
-            <button className="flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-md hover:shadow-lg transition-all active:scale-95">
-              <Sparkles className="h-4 w-4" />
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            <button className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm hover:shadow-md transition-all active:scale-95">
+              <Sparkles className="h-3.5 w-3.5" />
               Surprise me
             </button>
             <button
               onClick={() => setMode("aide")}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all"
             >
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-3.5 w-3.5" />
               Aide
             </button>
           </div>
@@ -213,7 +197,7 @@ const SearchBox = () => {
       </div>
 
       {/* Trending searches */}
-      <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
+      <div className="flex items-center justify-center gap-2.5 mt-4 flex-wrap">
         {trendingSearches.map((item) => (
           <button
             key={item.label}
